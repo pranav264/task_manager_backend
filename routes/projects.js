@@ -61,7 +61,22 @@ router.get("/getAllProjects/:username", async (req, res) => {
     await mongoose.connect(url);
     const user = await Users.findOne({ username: username });
     const projects = await Projects.find({ createdBy: user._id.toString() });
-    const projectsAsUser = await Projects.find({ users: user._id.toString() });
+
+    const tasks = Tasks.find({ users: user._id.toString() })
+
+    let projectIds = [];
+    for await (const task of tasks) {
+      if(!projectIds.includes(task.projectId)) {
+        projectIds.push(task.projectId);
+      }
+    }
+
+    let projectsAsUser = [];
+    for (const projectId of projectIds) {
+      let project = await Projects.findById(projectId);
+      projectsAsUser.push(project);
+    }
+
     const projects_array = [];
     const project_ids = [];
     projects.forEach((project) => {
