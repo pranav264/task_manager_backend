@@ -53,16 +53,13 @@ router.post("/create", async (req, res) => {
 // Get all projects by username
 router.get("/getAllProjects/:username", async (req, res) => {
   const username = req.params.username;
-  const token = req.headers.authorization;
-
-  const jwt_secret_key = process.env.JWT_SECRET;
-  const decoded_token = jwt.verify(token, jwt_secret_key);
 
     await mongoose.connect(url);
     const user = await Users.findOne({ username: username });
     const projects = await Projects.find({ createdBy: user._id.toString() });
 
-    const tasks = Tasks.find({ users: user._id.toString() })
+    const tasks = await Tasks.find({ "users._id" : user._id.toString() })
+    console.log(tasks);
 
     let projectIds = [];
     for await (const task of tasks) {

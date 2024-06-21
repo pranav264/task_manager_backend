@@ -66,7 +66,7 @@ router.get("/getAllTasks/:username/:projectId", async (req, res) => {
     if (decoded_token.username === username) {
       await mongoose.connect(url);
       const user = await Users.findOne({ username: username })
-      const tasks = await Tasks.find({ projectId: projectId, users: user._id.toString() });
+      const tasks = await Tasks.find({ projectId: projectId, "users._id": user._id.toString() });
       res.status(res.statusCode).json(tasks);
     }
   } catch (error) {
