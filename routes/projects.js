@@ -58,7 +58,6 @@ router.get("/getAllProjects/:username", async (req, res) => {
   const jwt_secret_key = process.env.JWT_SECRET;
   const decoded_token = jwt.verify(token, jwt_secret_key);
 
-  if (decoded_token.username === username) {
     await mongoose.connect(url);
     const user = await Users.findOne({ username: username });
     const projects = await Projects.find({ createdBy: user._id.toString() });
@@ -84,7 +83,6 @@ router.get("/getAllProjects/:username", async (req, res) => {
 
     await mongoose.disconnect();
     res.status(res.statusCode).json(projects_array);
-  }
 });
 
 // Get single project by projectId
